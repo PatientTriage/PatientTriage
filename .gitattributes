@@ -1,2 +1,4 @@
-/mvnw text eol=lf
+# Maven wrapper scripts
+backend/mvnw text eol=lf
+backend/mvnw.cmd text eol=crlf
 *.cmd text eol=crlf
