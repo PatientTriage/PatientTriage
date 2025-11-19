@@ -8,7 +8,7 @@ services:
     container_name: triage-postgres
     restart: always
     environment:
-      POSTGRES_DB: triage
+      POSTGRES_DB: patienttriage
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
@@ -38,7 +38,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/triage
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/patienttriage
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
 
