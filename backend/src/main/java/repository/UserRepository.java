@@ -2,6 +2,7 @@ package repository;
 
 import entity.User;
 import java.util.Optional;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,5 +24,20 @@ public interface UserRepository extends JpaRepository<User, Long> {
 //   */
 //  Optional<User> findByUsername(String username);
 
+  /**
+   * Finds a user by username.
+   * Commonly used in login/authentication.
+   *
+   * @param username the login username
+   * @return Optional<User> if found
+   */
+  Optional<User> findByUsername(String username);
 
+  /**
+   * Checks whether a username already exists.
+   * Useful during registration to avoid duplicates.
+   */
+  boolean existsByUsername(String username);
 }
+
+
