@@ -1,14 +1,14 @@
-package controller;
+package com.patienttriage.controller;
 
 
-import dto.UserLoginRequest;
-import dto.UserRegisterRequest;
-import entity.User;
+import com.patienttriage.dto.UserLoginRequest;
+import com.patienttriage.dto.UserRegisterRequest;
+import com.patienttriage.entity.User;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.UserService;
+import com.patienttriage.service.UserService;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,6 +19,7 @@ public class UserController {
   public UserController(UserService userService) {
     this.userService = userService;
   }
+  // TODO: need a get API for register, so that the web will not automatically go to the login page.
 
   /**
    * User Registration
@@ -47,4 +48,8 @@ public class UserController {
         request.getPassword()
     );
   }
+
+  // TODO: If there's new user, direct to the register link
+
+  // TODO: split the different role with different functionality
 }

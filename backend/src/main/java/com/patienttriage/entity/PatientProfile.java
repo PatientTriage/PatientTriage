@@ -1,4 +1,4 @@
-package entity;
+package com.patienttriage.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 public class PatientProfile {
   @Id
   @Column(name = "patient_id")
-  private String patientId; // getter only
+  private Long patientId; // getter only
 
   @OneToOne
   @MapsId
@@ -55,11 +55,11 @@ public class PatientProfile {
     this.patient = patient;
   }
 
-  public String getPatientId() {
+  public Long getPatientId() {
     return patientId;
   }
 
-  public void setPatientId(String patientId) {
+  public void setPatientId(Long patientId) {
     this.patientId = patientId;
   }
 

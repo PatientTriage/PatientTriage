@@ -1,7 +1,7 @@
-package dto;
+package com.patienttriage.dto;
 
-import entity.User;
-import entity.UserRole;
+import com.patienttriage.entity.User;
+import com.patienttriage.entity.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

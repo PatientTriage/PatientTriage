@@ -1,11 +1,11 @@
-package service.impl;
+package com.patienttriage.service.impl;
 
-import entity.User;
-import entity.UserRole;
+import com.patienttriage.repository.UserRepository;
+import com.patienttriage.entity.User;
+import com.patienttriage.entity.UserRole;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
-import service.UserService;
+import com.patienttriage.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -63,4 +63,5 @@ public class UserServiceImpl implements UserService {
     return userRepository.findByUsername(username)
         .orElseThrow(() -> new RuntimeException("User not found"));
   }
+
 }
