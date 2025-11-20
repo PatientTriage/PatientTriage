@@ -1,14 +1,20 @@
 package entity;
 
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
-// TODO： connect to database
 
+// done by Yuyun
 @Entity
 @Table(name="users")
 public class User {
@@ -16,34 +22,38 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "username", unique = true, nullable = false)
   private String username;  //login
+
+  @Column(name = "password", nullable = false)
   private String password;  //login
 
-  private String name;
-  private int age;
-  private String gender;    //MALE, FEMALE, PREFER NOT TO SAY
-  private String address;
-  private String phone;
+  @Column(name = "role", nullable = false)
+  @Enumerated(EnumType.STRING)
+  private UserRole role;
 
-
-  private String triagePriority;  // AI pre-analysis: RED > YELLOW > GREEN
-
-
+  @Column(name = "created_at")
   private LocalDateTime createdAt;
 
   public User(){}
 
-  public User(String username, String password, String name, int age, String gender, String address, String phone, String triagePriority) {
+  public User(String username, String password, UserRole role) {
     this.username = username;
     this.password = password;
-    this.name = name;
-    this.age = age;
-    this.gender = gender;
-    this.address = address;
-    this.phone = phone;
-    this.triagePriority = triagePriority;
+    this.role = role;
     this.createdAt = LocalDateTime.now();
   }
+
+  // for each user only have one file based on their role and user id
+  // mappedBy = "user", the user is defined in the profile entities, they are mapping
+  @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private PatientProfile patientProfile;
+
+  @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private DoctorProfile doctorProfile;
+
+  @OneToOne(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  private AdminProfile adminProfile;
 
   public Long getId() {
     return id;
@@ -57,14 +67,6 @@ public class User {
     this.username = username;
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getPassword() {
     return password;
   }
@@ -73,56 +75,22 @@ public class User {
     this.password = password;
   }
 
-  public int getAge() {
-    return age;
+  public UserRole getRole() {
+    return role;
   }
 
-  public void setAge(int age) {
-    this.age = age;
-  }
-
-  public String getGender() {
-    return gender;
-  }
-
-  public void setGender(String gender) {
-    this.gender = gender;
-  }
-
-  public String getAddress() {
-    return address;
-  }
-
-  public void setAddress(String address) {
-    this.address = address;
-  }
-
-  public String getPhone() {
-    return phone;
-  }
-
-  public void setPhone(String phone) {
-    this.phone = phone;
-  }
-
-  public String getTriagePriority() {
-    return triagePriority;
-  }
-
-  public void setTriagePriority(String triagePriority) {
-    this.triagePriority = triagePriority;
+  public void setRole(UserRole role) {
+    this.role = role;
   }
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
+  // ----------- Helpers ----------
+  public boolean isPatient() { return role == UserRole.PATIENT; }
+  public boolean isDoctor() { return role == UserRole.DOCTOR; }
+  public boolean isAdmin() { return role == UserRole.ADMIN; }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
 
 }
