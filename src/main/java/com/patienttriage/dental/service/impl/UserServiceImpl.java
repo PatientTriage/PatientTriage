@@ -1,5 +1,6 @@
 package com.patienttriage.dental.service.impl;
 
+import com.patienttriage.dental.entity.Role;
 import com.patienttriage.dental.entity.User;
 import com.patienttriage.dental.repository.UserRepository;
 import com.patienttriage.dental.service.UserService;
@@ -20,7 +21,7 @@ public class UserServiceImpl implements UserService {
    * Registers a new user with an encrypted password.
    */
   @Override
-  public User register(String username, String rawPassword, User.Role role) {
+  public User register(String username, String rawPassword, Role role) {
 
     // Check duplicates
     if (userRepository.existsByUsername(username)) {

@@ -1,6 +1,6 @@
 package com.patienttriage.dental.dto;
 
-import com.patienttriage.dental.entity.User;
+import com.patienttriage.dental.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ public class UserRegisterRequest {
   private String password;
 
   @NotNull(message = "Role is required")
-  private User.Role role;
+  private Role role;
 
   public String getUsername() {
     return username;
@@ -37,11 +37,11 @@ public class UserRegisterRequest {
     this.password = password;
   }
 
-  public User.Role getRole() {
+  public Role getRole() {
     return role;
   }
 
-  public void setRole(User.Role role) {
+  public void setRole(Role role) {
     this.role = role;
   }
 }

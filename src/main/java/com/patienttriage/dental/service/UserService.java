@@ -1,12 +1,13 @@
 package com.patienttriage.dental.service;
 
 import com.patienttriage.dental.entity.User;
+import com.patienttriage.dental.entity.Role;
 
 public interface UserService {
   /**
    * Registers a new user with encrypted password.
    */
-  User register(String username, String rawPassword, User.Role role);
+  User register(String username, String rawPassword, Role role);
 
   /**
    * Authenticates a user and verifies password.

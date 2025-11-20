@@ -21,11 +21,8 @@ import org.hibernate.annotations.CreationTimestamp;
 @Table(name="users")
 public class User {
 
-  public enum Role {
-    PATIENT,
-    DOCTOR,
-    ADMIN
-  }
+  @Enumerated(EnumType.STRING)
+  private Role role;
 
   @Id  // Primary Key in database
   @GeneratedValue(strategy = GenerationType.IDENTITY)  //automatically increase
@@ -34,9 +31,6 @@ public class User {
   private String username;  //user login username (typically email)
   @JsonIgnore   // excluded from JSON responses. Stored in DB as hashed value.
   private String password;
-
-  @Enumerated(EnumType.STRING)
-  private Role role;
 
   @CreationTimestamp
   private LocalDateTime createdAt;
