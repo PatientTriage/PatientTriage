@@ -1,13 +1,4 @@
 
--- ===========================================
--- ENUM: user_role
--- ===========================================
-DO $$ BEGIN
-    CREATE TYPE user_role AS ENUM ('PATIENT', 'DOCTOR', 'ADMIN');
-EXCEPTION
-    WHEN duplicate_object THEN null;
-END $$;
-
 -- ============================================
 -- 1. DROP tables + types (ONLY FOR DEVELOPMENT)
 -- delete this step in the future to save data
@@ -24,7 +15,7 @@ CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password VARCHAR(255) NOT NULL,
-    role user_role NOT NULL,
+    role varchar(20) NOT NULL,
     created_at TIMESTAMP DEFAULT NOW()
 );
 

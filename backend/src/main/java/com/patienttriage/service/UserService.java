@@ -1,7 +1,9 @@
-package service;
+package com.patienttriage.service;
 
-import entity.User;
-import entity.UserRole;
+import com.patienttriage.entity.User;
+import com.patienttriage.entity.UserRole;
+import com.patienttriage.entity.User;
+import com.patienttriage.entity.UserRole;
 import org.springframework.stereotype.Service;
 
 public interface UserService {

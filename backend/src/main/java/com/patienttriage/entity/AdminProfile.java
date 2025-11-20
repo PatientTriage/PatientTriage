@@ -1,4 +1,4 @@
-package entity;
+package com.patienttriage.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

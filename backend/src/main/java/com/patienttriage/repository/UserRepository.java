@@ -1,6 +1,6 @@
-package repository;
+package com.patienttriage.repository;
 
-import entity.User;
+import com.patienttriage.entity.User;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,15 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-
-// this is a sample signature
-//  /**
-//   * Finding a user by their username
-//   *
-//   * @param username the unique username of the user
-//   * @return an Optional containing the User if found, otherwise empty
-//   */
-//  Optional<User> findByUsername(String username);
 
   /**
    * Finds a user by username.

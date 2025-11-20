@@ -1,4 +1,4 @@
-package entity;
+package com.patienttriage.entity;
 
 public enum UserRole {
   ADMIN,

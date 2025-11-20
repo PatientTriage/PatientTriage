@@ -1,13 +1,14 @@
-package repository;
+package com.patienttriage.repository;
 
-import entity.Appointment;
-import entity.User;
+import com.patienttriage.entity.Appointment;
+import com.patienttriage.entity.User;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+
 
   /**
    * Find all appointments belongs to a specific patientId

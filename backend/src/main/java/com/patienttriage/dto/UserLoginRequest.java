@@ -1,4 +1,4 @@
-package dto;
+package com.patienttriage.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
