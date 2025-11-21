@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-
   /**
    * Find all appointments belongs to a specific patientId
    * @param patientId the patient id (unique in patient_profile)
