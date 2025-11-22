@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 @Table(name = "admin_profile")
 public class AdminProfile {
 
-  @Id
+  @Id                                                                                                                                                            
   private Long adminId; // getter only
 
   @MapsId

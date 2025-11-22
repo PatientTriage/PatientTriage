@@ -37,6 +37,8 @@ CREATE TABLE patient_profile (
 
     CONSTRAINT fk_patient_user
     -- the patient_id should always as same as id in users table
+    -- foreign key: a rule that connects two tables together and ensures that data between them is
+    -- valid
      FOREIGN KEY (patient_id)
          REFERENCES users(id)
          ON DELETE CASCADE

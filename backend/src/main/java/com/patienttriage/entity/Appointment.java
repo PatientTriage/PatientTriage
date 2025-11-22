@@ -32,6 +32,9 @@ public class Appointment {
    * and is the recommended practice for @ManyToOne associations.
    */
   // patient
+  // this is a User entity, so when we use JPA repository, we need to write the function name as
+  // findByPatient_Id to find the appointment related patientId. The underscore _ navigates to a
+  // property of the related entity
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "patient_id", nullable = false)
   private User patient;
@@ -41,7 +44,7 @@ public class Appointment {
   @JoinColumn(name = "doctor_id", nullable = false)
   private User doctor;
 
-  @Column(name = "appointment_time")
+  @Column(name = "appointment_time", nullable = false)
   private LocalDateTime appointmentTime;
 
   @Column(name = "reason")
