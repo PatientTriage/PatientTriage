@@ -1,6 +1,7 @@
 package com.patienttriage.repository;
 
 import com.patienttriage.entity.User;
+import com.patienttriage.entity.UserRole;
 import java.util.Optional;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +30,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
    * Useful during registration to avoid duplicates.
    */
   boolean existsByUsername(String username);
+
+
+
 }
 
 

@@ -1,5 +1,6 @@
 package com.patienttriage.dto;
 
+import com.patienttriage.entity.AppointmentStatus;
 import java.time.LocalDateTime;
 
 /**
@@ -18,7 +19,7 @@ public class AppointmentResponse {
   private Long doctorId;
   private LocalDateTime appointmentTime;
   private String reason;
-  private String status;
+  private AppointmentStatus status;
   private LocalDateTime createdAt;
 
   // optional, based on the role
@@ -31,7 +32,7 @@ public class AppointmentResponse {
 
   // basic appointment info for all roles
   public AppointmentResponse(Long id, Long patientId, Long doctorId,
-      LocalDateTime appointmentTime, String reason, String status, LocalDateTime createdAt) {
+      LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt) {
     this.id = id;
     this.patientId = patientId;
     this.doctorId = doctorId;
@@ -43,7 +44,7 @@ public class AppointmentResponse {
 
   // Full constructor with nested objects
   public AppointmentResponse(Long id, Long patientId, Long doctorId,
-      LocalDateTime appointmentTime, String reason, String status, LocalDateTime createdAt,
+      LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt,
       PatientInfo patientInfo, DoctorInfo doctorInfo, LimitedDoctorInfo limitedDoctorInfo) {
     this.id = id;
     this.patientId = patientId;
@@ -62,13 +63,19 @@ public class AppointmentResponse {
     return id;
   }
 
+  public void setId(Long id) {this.id = id;}
+
   public Long getPatientId() {
     return patientId;
   }
 
+  public void setPatientId(Long patientId) { this.patientId = patientId;}
+
   public Long getDoctorId() {
     return doctorId;
   }
+
+  public void setDoctorId(Long doctorId) {this.doctorId = doctorId;}
 
   public LocalDateTime getAppointmentTime() {
     return appointmentTime;
@@ -86,11 +93,11 @@ public class AppointmentResponse {
     this.reason = reason;
   }
 
-  public String getStatus() {
+  public AppointmentStatus getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(AppointmentStatus status) {
     this.status = status;
   }
 

@@ -2,6 +2,7 @@ package com.patienttriage.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(nullable = false, updatable = false)
   private Long id;
 
   @Column(name = "username", unique = true, nullable = false)
@@ -85,6 +87,19 @@ public class User {
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
+  }
+
+  // Profile getters
+  public PatientProfile getPatientProfile() {
+    return patientProfile;
+  }
+
+  public DoctorProfile getDoctorProfile() {
+    return doctorProfile;
+  }
+
+  public AdminProfile getAdminProfile() {
+    return adminProfile;
   }
 
   // ----------- Helpers ----------
