@@ -1,12 +1,12 @@
-
--- ============================================
--- 1. DROP tables + types (ONLY FOR DEVELOPMENT)
--- delete this step in the future to save data
--- ============================================
-DROP TABLE IF EXISTS admin_profile CASCADE;
-DROP TABLE IF EXISTS doctor_profile CASCADE;
-DROP TABLE IF EXISTS patient_profile CASCADE;
-DROP TABLE IF EXISTS users CASCADE;
+--
+-- -- ============================================
+-- -- 1. DROP tables + types (ONLY FOR DEVELOPMENT)
+-- -- delete this step in the future to save data
+-- -- ============================================
+-- DROP TABLE IF EXISTS admin_profile CASCADE;
+-- DROP TABLE IF EXISTS doctor_profile CASCADE;
+-- DROP TABLE IF EXISTS patient_profile CASCADE;
+-- DROP TABLE IF EXISTS users CASCADE;
 
 -- ============================================
 -- 2. Create main "users" table

@@ -21,7 +21,7 @@ public interface AppointmentService {
    * @param currentUserId the ID of the user making the request (for authorization)
    * @return AppointmentResponse with role-appropriate information
    */
-  AppointmentResponse createAppointment(AppointmentRequest request, Long currentUserId);
+  void createAppointment(AppointmentRequest request, Long currentUserId);
 
   /**
    * Retrieves a single appointment by ID with role-based access control.
@@ -64,36 +64,36 @@ public interface AppointmentService {
    */
   AppointmentResponse cancelAppointment(Long appointmentId, Long currentUserId);
 
-  /**
-   * Retrieves all appointments for a specific patient.
-   * Role constraints:
-   * - PATIENT: can only view their own appointments (patientId must match currentUserId)
-   * - DOCTOR/ADMIN: can view appointments for any patient
-   * 
-   * @param patientId the ID of the patient
-   * @param currentUserId the ID of the user making the request (for authorization)
-   * @return List of AppointmentResponse with role-appropriate information
-   */
-  List<AppointmentResponse> getAppointmentsByPatientId(Long patientId, Long currentUserId);
-
-  /**
-   * Retrieves all appointments for a specific doctor.
-   * Role constraints:
-   * - DOCTOR: can only view their own appointments (doctorId must match currentUserId)
-   * - PATIENT/ADMIN: can view appointments for any doctor
-   * 
-   * @param doctorId the ID of the doctor
-   * @param currentUserId the ID of the user making the request (for authorization)
-   * @return List of AppointmentResponse with role-appropriate information
-   */
-  List<AppointmentResponse> getAppointmentsByDoctorId(Long doctorId, Long currentUserId);
-
-  /**
-   * Retrieves all appointments in the system (admin only).
-   * 
-   * @param currentUserId the ID of the user making the request (must be ADMIN)
-   * @return List of all AppointmentResponse with full information
-   */
-  List<AppointmentResponse> getAllAppointments(Long currentUserId);
+//  /**
+//   * Retrieves all appointments for a specific patient.
+//   * Role constraints:
+//   * - PATIENT: can only view their own appointments (patientId must match currentUserId)
+//   * - DOCTOR/ADMIN: can view appointments for any patient
+//   *
+//   * @param patientId the ID of the patient
+//   * @param currentUserId the ID of the user making the request (for authorization)
+//   * @return List of AppointmentResponse with role-appropriate information
+//   */
+//  List<AppointmentResponse> getAppointmentsByPatientId(Long patientId, Long currentUserId);
+//
+//  /**
+//   * Retrieves all appointments for a specific doctor.
+//   * Role constraints:
+//   * - DOCTOR: can only view their own appointments (doctorId must match currentUserId)
+//   * - PATIENT/ADMIN: can view appointments for any doctor
+//   *
+//   * @param doctorId the ID of the doctor
+//   * @param currentUserId the ID of the user making the request (for authorization)
+//   * @return List of AppointmentResponse with role-appropriate information
+//   */
+//  List<AppointmentResponse> getAppointmentsByDoctorId(Long doctorId, Long currentUserId);
+//
+//  /**
+//   * Retrieves all appointments in the system (admin only).
+//   *
+//   * @param currentUserId the ID of the user making the request (must be ADMIN)
+//   * @return List of all AppointmentResponse with full information
+//   */
+//  List<AppointmentResponse> getAllAppointments(Long currentUserId);
 
 }
