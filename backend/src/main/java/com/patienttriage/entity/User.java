@@ -1,5 +1,6 @@
 package com.patienttriage.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -48,12 +49,15 @@ public class User {
 
   // for each user only have one file based on their role and user id
   // mappedBy = "user", the user is defined in the profile entities, they are mapping
+  @JsonIgnore
   @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private PatientProfile patientProfile;
 
+  @JsonIgnore
   @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private DoctorProfile doctorProfile;
 
+  @JsonIgnore
   @OneToOne(mappedBy = "admin", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   private AdminProfile adminProfile;
 

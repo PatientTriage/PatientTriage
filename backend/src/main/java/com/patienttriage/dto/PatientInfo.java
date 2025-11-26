@@ -5,7 +5,14 @@ package com.patienttriage.dto;
  * Used in AppointmentResponse for DOCTOR and ADMIN roles
  */
 public class PatientInfo {
-    
+    PatientInfo patientInfo;
+
+    public PatientInfo(PatientInfo patientInfo) {
+        this.patientInfo = patientInfo;
+    }
+    public PatientInfo getPatientInfo() {
+        return patientInfo;
+    }
     private Long patientId;
     private String firstName;
     private String lastName;
@@ -18,7 +25,6 @@ public class PatientInfo {
     private String triagePriority;
     
     // Default constructor
-    public PatientInfo() {}
     
     // Full constructor
     public PatientInfo(Long patientId, String firstName, String lastName, int age,
@@ -37,6 +43,10 @@ public class PatientInfo {
     }
     
     // Getters and Setters
+    public void setPatientInfo(PatientInfo patientInfo) {
+      this.patientInfo = patientInfo;
+    }
+
     public Long getPatientId() {
         return patientId;
     }
