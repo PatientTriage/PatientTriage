@@ -2,6 +2,8 @@ package com.patienttriage.service;
 
 import com.patienttriage.dto.AppointmentRequest;
 import com.patienttriage.dto.AppointmentResponse;
+import com.patienttriage.entity.Appointment;
+import com.patienttriage.entity.UserRole;
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  */
 public interface AppointmentService {
 
+  // ------------- Create appointments -------------- //
   /**
    * Creates a new appointment.
    * Role constraints:
@@ -18,24 +21,36 @@ public interface AppointmentService {
    * - ADMIN: can create appointments for any patient and doctor
    * 
    * @param request the appointment request containing patientId, doctorId, appointmentTime, and reason
+   * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)
    * @return AppointmentResponse with role-appropriate information
    */
-  void createAppointment(AppointmentRequest request, Long currentUserId);
+  AppointmentResponse createAppointment(AppointmentRequest request, UserRole role, Long currentUserId);
 
+  // ------------- Get appointments -------------- //
   /**
-   * Retrieves a single appointment by ID with role-based access control.
+   * Retrieves all the appointments by currentUserId with role-based access control.
    * Role constraints:
    * - PATIENT: can only view their own appointments (with limited doctor info)
    * - DOCTOR: can view appointments assigned to them (with full patient profile)
    * - ADMIN: can view any appointment (with full patient and doctor profiles)
    * 
-   * @param appointmentId the ID of the appointment to retrieve
+   * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)
-   * @return AppointmentResponse with role-appropriate information
+   * @return List<AppointmentResponse> with role-appropriate information
    */
-  AppointmentResponse checkAppointment(Long appointmentId, Long currentUserId);
+  List<AppointmentResponse> getAppointments(UserRole role, Long currentUserId);
 
+  /**
+   * Retrieve a single appointment by ID with role-based access control.
+   * @param appointmentId the id of appointment, each appointment have unique id.
+   * @param role ADMIN, DOCTOR, PATIENT
+   * @param currentUserId the ID of the user making the request (for authorization)
+   * @return AppointmentResponse with role-appropriate information.
+   */
+  AppointmentResponse getAppointmentById(Long appointmentId, UserRole role, Long currentUserId);
+
+  // ------------- Update appointments -------------- //
   /**
    * Updates an existing appointment.
    * Role constraints:
@@ -46,11 +61,13 @@ public interface AppointmentService {
    * 
    * @param appointmentId the ID of the appointment to update
    * @param request the appointment request containing updated fields
+   * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)
    * @return AppointmentResponse with updated information
    */
-  AppointmentResponse updateAppointment(Long appointmentId, AppointmentRequest request, Long currentUserId);
+  AppointmentResponse updateAppointment(Long appointmentId, AppointmentRequest request, UserRole role, Long currentUserId);
 
+  // ------------- Cancel appointments -------------- //
   /**
    * Cancels an appointment by setting status to CANCELLED.
    * Role constraints:
@@ -59,10 +76,11 @@ public interface AppointmentService {
    * - ADMIN: can cancel any appointment
    * 
    * @param appointmentId the ID of the appointment to cancel
+   * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)
    * @return AppointmentResponse with cancelled status
    */
-  AppointmentResponse cancelAppointment(Long appointmentId, Long currentUserId);
+  AppointmentResponse cancelAppointment(Long appointmentId, UserRole role, Long currentUserId);
 
 //  /**
 //   * Retrieves all appointments for a specific patient.

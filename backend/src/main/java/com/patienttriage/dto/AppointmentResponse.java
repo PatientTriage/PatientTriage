@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class AppointmentResponse {
 
   // will always present - basic appointment info
-  private Long id;
+  private Long appointmentId;
   private Long patientId;
   private Long doctorId;
   private LocalDateTime appointmentTime;
@@ -31,9 +31,9 @@ public class AppointmentResponse {
   public AppointmentResponse() {}
 
   // basic appointment info for all roles
-  public AppointmentResponse(Long id, Long patientId, Long doctorId,
+  public AppointmentResponse(Long appointmentId, Long patientId, Long doctorId,
       LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt) {
-    this.id = id;
+    this.appointmentId = appointmentId;
     this.patientId = patientId;
     this.doctorId = doctorId;
     this.appointmentTime = appointmentTime;
@@ -43,10 +43,10 @@ public class AppointmentResponse {
   }
 
   // Full constructor with nested objects
-  public AppointmentResponse(Long id, Long patientId, Long doctorId,
+  public AppointmentResponse(Long appointmentId, Long patientId, Long doctorId,
       LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt,
       PatientInfo patientInfo, DoctorInfo doctorInfo, LimitedDoctorInfo limitedDoctorInfo) {
-    this.id = id;
+    this.appointmentId = appointmentId;
     this.patientId = patientId;
     this.doctorId = doctorId;
     this.appointmentTime = appointmentTime;
@@ -59,11 +59,11 @@ public class AppointmentResponse {
   }
 
   // Getters and Setters
-  public Long getId() {
-    return id;
+  public Long getAppointmentId() {
+    return appointmentId;
   }
 
-  public void setId(Long id) {this.id = id;}
+  public void setAppointmentId(Long appointmentId) {this.appointmentId = appointmentId;}
 
   public Long getPatientId() {
     return patientId;
@@ -103,6 +103,10 @@ public class AppointmentResponse {
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
   }
 
   public PatientInfo getPatientInfo() {
