@@ -125,6 +125,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.getDoctor().getId(),
         appointment.getAppointmentTime(),
         appointment.getReason(),
+        // TODO: solve this by search for how to use enumerate entity type change to String that are
+        //  same in the data schema.
         appointment.getStatus(),
         appointment.getCreatedAt()
     );

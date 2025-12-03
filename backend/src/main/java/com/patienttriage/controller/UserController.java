@@ -89,5 +89,5 @@ public class UserController {
 
   // TODO: If there's new user, direct to the register link
 
-  // TODO: split the different role with different functionality
+
 }
