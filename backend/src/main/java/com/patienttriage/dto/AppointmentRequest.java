@@ -18,7 +18,7 @@ public class AppointmentRequest {
 
   @NotNull(message = "Appointment time is required")
   @Future(message = "Appointment time must be in the future")
-  private LocalDateTime startDateTime; // frontend must use format like: "2025-11-21T14:00:00"
+  private LocalDateTime appointmentTime; // frontend must use format like: "2025-11-21T14:00:00"
 
   private String reason; // Optional field
 
@@ -38,12 +38,12 @@ public class AppointmentRequest {
     this.doctorId = doctorId;
   }
 
-  public LocalDateTime getStartDateTime() {
-    return startDateTime;
+  public LocalDateTime getAppointmentTime() {
+    return appointmentTime;
   }
 
-  public void setStartDateTime(LocalDateTime startDateTime) {
-    this.startDateTime = startDateTime;
+  public void setStartDateTime(LocalDateTime appointmentTime) {
+    this.appointmentTime = appointmentTime;
   }
 
   public String getReason() {

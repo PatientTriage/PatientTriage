@@ -1,5 +1,6 @@
 package com.patienttriage.dto;
 
+import com.patienttriage.entity.AppointmentStatus;
 import java.time.LocalDateTime;
 
 /**
@@ -13,12 +14,12 @@ import java.time.LocalDateTime;
 public class AppointmentResponse {
 
   // will always present - basic appointment info
-  private Long id;
+  private Long appointmentId;
   private Long patientId;
   private Long doctorId;
   private LocalDateTime appointmentTime;
   private String reason;
-  private String status;
+  private AppointmentStatus status;
   private LocalDateTime createdAt;
 
   // optional, based on the role
@@ -30,9 +31,9 @@ public class AppointmentResponse {
   public AppointmentResponse() {}
 
   // basic appointment info for all roles
-  public AppointmentResponse(Long id, Long patientId, Long doctorId,
-      LocalDateTime appointmentTime, String reason, String status, LocalDateTime createdAt) {
-    this.id = id;
+  public AppointmentResponse(Long appointmentId, Long patientId, Long doctorId,
+      LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt) {
+    this.appointmentId = appointmentId;
     this.patientId = patientId;
     this.doctorId = doctorId;
     this.appointmentTime = appointmentTime;
@@ -42,10 +43,10 @@ public class AppointmentResponse {
   }
 
   // Full constructor with nested objects
-  public AppointmentResponse(Long id, Long patientId, Long doctorId,
-      LocalDateTime appointmentTime, String reason, String status, LocalDateTime createdAt,
+  public AppointmentResponse(Long appointmentId, Long patientId, Long doctorId,
+      LocalDateTime appointmentTime, String reason, AppointmentStatus status, LocalDateTime createdAt,
       PatientInfo patientInfo, DoctorInfo doctorInfo, LimitedDoctorInfo limitedDoctorInfo) {
-    this.id = id;
+    this.appointmentId = appointmentId;
     this.patientId = patientId;
     this.doctorId = doctorId;
     this.appointmentTime = appointmentTime;
@@ -58,17 +59,23 @@ public class AppointmentResponse {
   }
 
   // Getters and Setters
-  public Long getId() {
-    return id;
+  public Long getAppointmentId() {
+    return appointmentId;
   }
+
+  public void setAppointmentId(Long appointmentId) {this.appointmentId = appointmentId;}
 
   public Long getPatientId() {
     return patientId;
   }
 
+  public void setPatientId(Long patientId) { this.patientId = patientId;}
+
   public Long getDoctorId() {
     return doctorId;
   }
+
+  public void setDoctorId(Long doctorId) {this.doctorId = doctorId;}
 
   public LocalDateTime getAppointmentTime() {
     return appointmentTime;
@@ -86,16 +93,20 @@ public class AppointmentResponse {
     this.reason = reason;
   }
 
-  public String getStatus() {
+  public AppointmentStatus getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(AppointmentStatus status) {
     this.status = status;
   }
 
   public LocalDateTime getCreatedAt() {
     return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
   }
 
   public PatientInfo getPatientInfo() {

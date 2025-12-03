@@ -47,12 +47,13 @@ public class PatientProfile {
   @Column(name = "triage_priority", length = 20)
   private String triagePriority;
 
-  // constructor
+  // default constructor
   public PatientProfile() {}
 
-  // TODO: revise as needed
+  // Constructor: ensure IDs are synced
   public PatientProfile(User patient) {
     this.patient = patient;
+    this.patientId = patient.getId();
   }
 
   public Long getPatientId() {
@@ -69,6 +70,7 @@ public class PatientProfile {
 
   public void setPatient(User patient) {
     this.patient = patient;
+    this.patientId = patient != null ? patient.getId() : null;
   }
 
   public String getFirstName() {
