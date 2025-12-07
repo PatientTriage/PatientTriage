@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
+/**
+ * REST controller for appointment management operations.
+ */
 @RestController
 @RequestMapping("/api/appointments")
 public class AppointmentController {
@@ -73,6 +76,12 @@ public class AppointmentController {
   // -------------------------------------------------------------------
   // Get All Appointments (role-based)
   // -------------------------------------------------------------------
+  /**
+   * Retrieves all appointments for the current logged-in user.
+   * 
+   * @param session HTTP session containing logged-in user information
+   * @return HTTP 200 OK with list of appointments, or error response
+   */
   @GetMapping("/my")
   public ResponseEntity<Object> getAppointments(HttpSession session) {
 
@@ -95,6 +104,13 @@ public class AppointmentController {
   // -------------------------------------------------------------------
   // Get Single Appointment by ID
   // -------------------------------------------------------------------
+  /**
+   * Retrieves a single appointment by ID.
+   * 
+   * @param appointmentId the ID of the appointment to retrieve
+   * @param session HTTP session containing logged-in user information
+   * @return HTTP 200 OK with appointment details, or error response
+   */
   @GetMapping("/{appointmentId}")
   public ResponseEntity<Object> getAppointmentById(
       @PathVariable Long appointmentId,
@@ -118,6 +134,14 @@ public class AppointmentController {
   // -------------------------------------------------------------------
   // Update Appointment
   // -------------------------------------------------------------------
+  /**
+   * Updates an existing appointment.
+   * 
+   * @param appointmentId the ID of the appointment to update
+   * @param request the appointment request containing updated fields
+   * @param session HTTP session containing logged-in user information
+   * @return HTTP 200 OK with updated appointment, or error response
+   */
   @PutMapping("/{appointmentId}")
   public ResponseEntity<Object> updateAppointment(
       @PathVariable Long appointmentId,
@@ -144,6 +168,13 @@ public class AppointmentController {
   // -------------------------------------------------------------------
   // Cancel Appointment
   // -------------------------------------------------------------------
+  /**
+   * Cancels an appointment by setting status to CANCELLED.
+   * 
+   * @param appointmentId the ID of the appointment to cancel
+   * @param session HTTP session containing logged-in user information
+   * @return HTTP 200 OK with cancelled appointment, or error response
+   */
   @DeleteMapping("/{appointmentId}")
   public ResponseEntity<Object> cancelAppointment(
       @PathVariable Long appointmentId,

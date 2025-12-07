@@ -1,9 +1,7 @@
 package com.patienttriage.dto;
 
 /**
- * LimitedDoctorInfo DTO - Contains limited doctor information
- * Used in AppointmentResponse for PATIENT role
- * Only includes: firstName, lastName, specialty (as per requirements)
+ * DTO containing limited doctor information for patients.
  */
 public class LimitedDoctorInfo {
     

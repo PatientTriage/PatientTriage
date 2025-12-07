@@ -1,8 +1,7 @@
 package com.patienttriage.dto;
 
 /**
- * DoctorInfo DTO - Contains full doctor profile information
- * Used in AppointmentResponse for DOCTOR and ADMIN roles
+ * DTO containing full doctor profile information.
  */
 public class DoctorInfo {
     

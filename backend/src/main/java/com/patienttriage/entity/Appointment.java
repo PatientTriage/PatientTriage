@@ -13,6 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
+/**
+ * Entity representing an appointment between a patient and a doctor.
+ */
 @Entity
 @Table(name = "appointments")
 public class Appointment {

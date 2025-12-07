@@ -9,6 +9,9 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Entity representing an admin profile.
+ */
 @Entity
 @Table(name = "admin_profile")
 public class AdminProfile {

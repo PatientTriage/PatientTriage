@@ -16,7 +16,9 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 
-// done by Yuyun
+/**
+ * Entity representing a user in the system.
+ */
 @Entity
 @Table(name="users")
 public class User {

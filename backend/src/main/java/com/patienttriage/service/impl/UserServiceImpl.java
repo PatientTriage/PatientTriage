@@ -7,6 +7,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.patienttriage.service.UserService;
 
+/**
+ * Implementation of UserService for user management operations.
+ */
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -18,7 +21,12 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Registers a new user with an encrypted password.
+   * Registers a new user with encrypted password.
+   * 
+   * @param username the username for the new user
+   * @param rawPassword the plain text password to be encrypted
+   * @param role the role of the user (ADMIN, DOCTOR, PATIENT)
+   * @return the newly created User entity
    */
   @Override
   public User register(String username, String rawPassword, UserRole role) {
@@ -39,7 +47,11 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * User login validation.
+   * Authenticates a user and verifies password.
+   * 
+   * @param username the username to authenticate
+   * @param rawPassword the plain text password to verify
+   * @return the authenticated User entity
    */
   @Override
   public User login(String username, String rawPassword) {
@@ -56,7 +68,10 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Fetch a user by username.
+   * Finds a user by username.
+   * 
+   * @param username the username to search for
+   * @return the User entity with the matching username
    */
   @Override
   public User findByUsername(String username) {
