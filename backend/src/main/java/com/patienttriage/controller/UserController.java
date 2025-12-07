@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.patienttriage.service.UserService;
 
+/**
+ * REST controller for user management operations.
+ */
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -26,9 +29,10 @@ public class UserController {
   // TODO: need a get API for register, so that the web will not automatically go to the login page.
 
   /**
-   * User Registration
-   * Why POST?
-   * - Registration creates a new resource in DB → POST is correct HTTP method.
+   * Registers a new user.
+   * 
+   * @param request the registration request containing username, password, and role
+   * @return the newly created User entity
    */
   @PostMapping("/register")
   public User register(@RequestBody UserRegisterRequest request) {
@@ -40,12 +44,11 @@ public class UserController {
   }
 
   /**
-   * User Login
-   * Why POST?
-   * - Login involves sending sensitive data (password)
-   * - POST body is safer than GET params
+   * Authenticates a user and stores session information.
    * 
-   * Stores user ID in session after successful login
+   * @param request the login request containing username and password
+   * @param session HTTP session to store user information
+   * @return HTTP 200 OK with User entity, or error response
    */
   @PostMapping("/login")
   public ResponseEntity<User> login(@RequestBody UserLoginRequest request, HttpSession session) {
@@ -63,7 +66,10 @@ public class UserController {
   }
 
   /**
-   * Get current logged-in user from session
+   * Retrieves the current logged-in user from session.
+   * 
+   * @param session HTTP session containing user information
+   * @return HTTP 200 OK with user information, or 401 if not logged in
    */
   @GetMapping("/current")
   public ResponseEntity<Object> getCurrentUser(HttpSession session) {
@@ -79,7 +85,10 @@ public class UserController {
   }
 
   /**
-   * Logout - clears session
+   * Logs out the current user by invalidating the session.
+   * 
+   * @param session HTTP session to invalidate
+   * @return HTTP 200 OK with success message
    */
   @PostMapping("/logout")
   public ResponseEntity<Map<String, String>> logout(HttpSession session) {
@@ -89,5 +98,5 @@ public class UserController {
 
   // TODO: If there's new user, direct to the register link
 
-  // TODO: split the different role with different functionality
+
 }

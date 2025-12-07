@@ -3,8 +3,7 @@ package com.patienttriage.dto;
 import jakarta.validation.constraints.NotBlank;
 
 /**
- * DTO for user login.
- * Contains username + raw password.
+ * DTO for user login request.
  */
 public class UserLoginRequest {
 

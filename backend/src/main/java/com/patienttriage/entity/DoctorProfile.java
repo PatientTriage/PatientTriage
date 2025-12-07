@@ -8,6 +8,9 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Entity representing a doctor profile with professional information.
+ */
 @Entity
 @Table(name = "doctor_profile")
 public class DoctorProfile {
@@ -52,6 +55,11 @@ public class DoctorProfile {
 
   public User getDoctor() {
     return doctor;
+  }
+
+  public void setDoctor(User doctor) {
+    this.doctor = doctor;
+    this.doctorId = doctor != null ? doctor.getId() : null;
   }
 
   public String getFirstName() {

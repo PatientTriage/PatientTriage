@@ -4,12 +4,7 @@ import com.patienttriage.entity.AppointmentStatus;
 import java.time.LocalDateTime;
 
 /**
- * AppointmentResponse is a DTO used to return appointment details back to the client, including
- * appointment ID, patient/doctor IDs, time, reason, and status.
- * Nested objects are populated based on user role:
- *  - PATIENT: patientInfo = null, limitedDoctorInfo = populated, doctorInfo = null
- *  - DOCTOR: patientInfo = full PatientInfo, doctorInfo = full DoctorInfo, limitedDoctorInfo = null
- *  - ADMIN: patientInfo = full PatientInfo, doctorInfo = full DoctorInfo, limitedDoctorInfo = null
+ * DTO for returning appointment details to the client.
  */
 public class AppointmentResponse {
 

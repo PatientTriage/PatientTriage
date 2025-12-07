@@ -8,16 +8,24 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
-// handle the exception for the whole project
+/**
+ * Global exception handler for the entire application.
+ */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+  /**
+   * Handles validation errors from request body validation.
+   * 
+   * @param ex the validation exception
+   * @return HTTP 400 Bad Request with validation error details
+   */
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<Map<String, Object>> handleValidationExceptions(
       MethodArgumentNotValidException ex) {
     Map<String, Object> errors = new HashMap<>();
     Map<String, String> fieldErrors = new HashMap<>();
-    
+
+    // traver all request body to find the error
     ex.getBindingResult().getFieldErrors().forEach(error -> {
       fieldErrors.put(error.getField(), error.getDefaultMessage());
     });
@@ -33,6 +41,12 @@ public class GlobalExceptionHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
   }
 
+  /**
+   * Handles runtime exceptions from service layer.
+   * 
+   * @param ex the runtime exception
+   * @return HTTP 500 Internal Server Error with error message
+   */
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
     Map<String, Object> errors = new HashMap<>();

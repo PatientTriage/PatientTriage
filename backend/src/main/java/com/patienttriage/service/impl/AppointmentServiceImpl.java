@@ -23,6 +23,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementation of AppointmentService for appointment management operations.
+ */
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
 
@@ -31,7 +34,6 @@ public class AppointmentServiceImpl implements AppointmentService {
   private final PatientProfileRepository patientProfileRepository;
   private final DoctorProfileRepository doctorProfileRepository;
 
-  // Constructor injection
   public AppointmentServiceImpl(AppointmentRepository appointmentRepository, 
                                 UserRepository userRepository, PatientProfileRepository patientProfileRepository, DoctorProfileRepository doctorProfileRepository) {
     this.appointmentRepository = appointmentRepository;
@@ -41,6 +43,14 @@ public class AppointmentServiceImpl implements AppointmentService {
   }
 
   // ------------- Create appointments -------------- //
+  /**
+   * Creates a new appointment.
+   * 
+   * @param request the appointment request containing patientId, doctorId, appointmentTime, and reason
+   * @param role the role of the user making the request (ADMIN, DOCTOR, PATIENT)
+   * @param currentUserId the ID of the user making the request
+   * @return AppointmentResponse with role-appropriate information
+   */
   @Override
   @Transactional
   public AppointmentResponse createAppointment(AppointmentRequest request, UserRole role, Long currentUserId) {
@@ -63,8 +73,10 @@ public class AppointmentServiceImpl implements AppointmentService {
       if (!request.getDoctorId().equals(currentUserId)) {
         throw new RuntimeException("Doctors can only create appointments for themselves");
       }
+    } else if (currentUserRole == UserRole.ADMIN) {
+      // ADMIN can create appointments for any patient and doctor (no restrictions)
+      // No validation needed - admin has full access
     }
-    // ADMIN can create appointments for any patient and doctor (no validation needed)
 
     // 3. Validate patient exists and has PATIENT role
     User patient= userRepository.findById(request.getPatientId())
@@ -83,13 +95,20 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     // 5. Validate appointment time is in the future
-    // TODO: make sure there's no conflict appointment
     LocalDateTime appointmentTime = request.getAppointmentTime();
     if (appointmentTime.isBefore(LocalDateTime.now())) {
       throw new RuntimeException("Appointment time must be in the future");
     }
 
-    // 6. Create appointment entity
+    // 6. Check for time conflicts (doctor and patient cannot have overlapping appointments)
+    checkTimeConflicts(
+        appointmentTime,
+        request.getDoctorId(),
+        request.getPatientId(),
+        null // No appointment to ignore for new appointments
+    );
+
+    // 7. Create appointment entity
     Appointment appointment = new Appointment(
         patient,
         doctor,
@@ -97,12 +116,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         request.getReason()
     );
 
-    // 7. Save appointment
+    // 8. Save appointment
     Appointment savedAppointment = appointmentRepository.save(appointment);
     return toResponse(savedAppointment, currentUserRole);
   }
 
   // ------------- Get appointments -------------- //
+  /**
+   * Retrieves all appointments based on user role.
+   * 
+   * @param role the role of the user making the request (ADMIN, DOCTOR, PATIENT)
+   * @param currentUserId the ID of the user making the request
+   * @return List of AppointmentResponse with role-appropriate information
+   */
   @Override
   public List<AppointmentResponse> getAppointments(UserRole role, Long currentUserId) {
     // 1. load current user
@@ -132,6 +158,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         .toList();
   }
 
+  /**
+   * Retrieves a single appointment by ID.
+   * 
+   * @param appointmentId the ID of the appointment to retrieve
+   * @param role the role of the user making the request (ADMIN, DOCTOR, PATIENT)
+   * @param currentUserId the ID of the user making the request
+   * @return AppointmentResponse with role-appropriate information
+   */
   @Override
   public AppointmentResponse getAppointmentById(Long appointmentId, UserRole role, Long currentUserId) {
     Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -146,6 +180,15 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
   // ------------- Update appointments -------------- //
+  /**
+   * Updates an existing appointment.
+   * 
+   * @param appointmentId the ID of the appointment to update
+   * @param request the appointment request containing updated fields
+   * @param role the role of the user making the request (ADMIN, DOCTOR, PATIENT)
+   * @param currentUserId the ID of the user making the request
+   * @return AppointmentResponse with updated information
+   */
   @Override
   public AppointmentResponse updateAppointment(Long appointmentId, AppointmentRequest request, UserRole role, Long currentUserId) {
       Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -161,14 +204,58 @@ public class AppointmentServiceImpl implements AppointmentService {
         throw new IllegalArgumentException("Cannot update cancelled or completed appointments.");
       }
 
-      // ----- Time conflict check -----
+      // Check if doctor or patient is being changed
+      boolean doctorChanged = !request.getDoctorId().equals(appointment.getDoctor().getId());
+      boolean patientChanged = !request.getPatientId().equals(appointment.getPatient().getId());
+
+      // PATIENT and DOCTOR cannot change doctor/patient assignments
+      if (role != UserRole.ADMIN) {
+        if (doctorChanged) {
+          throw new IllegalArgumentException("You do not have permission to change the doctor for this appointment.");
+        }
+        if (patientChanged) {
+          throw new IllegalArgumentException("You do not have permission to change the patient for this appointment.");
+        }
+      }
+
+      // Admin can change doctor and patient - validate new ones exist and have correct roles
+      if (role == UserRole.ADMIN) {
+        if (doctorChanged) {
+          User newDoctor = userRepository.findById(request.getDoctorId())
+              .orElseThrow(() -> new RuntimeException("Doctor not found with id: " + request.getDoctorId()));
+          
+          if (newDoctor.getRole() != UserRole.DOCTOR) {
+            throw new RuntimeException("User with id " + request.getDoctorId() + " is not a doctor");
+          }
+          appointment.setDoctor(newDoctor);
+        }
+
+        if (patientChanged) {
+          User newPatient = userRepository.findById(request.getPatientId())
+              .orElseThrow(() -> new RuntimeException("Patient not found with id: " + request.getPatientId()));
+          
+          if (newPatient.getRole() != UserRole.PATIENT) {
+            throw new RuntimeException("User with id " + request.getPatientId() + " is not a patient");
+          }
+          appointment.setPatient(newPatient);
+        }
+      }
+
+      // Determine final doctor and patient IDs for conflict check
+      // (after any admin changes, use the final values)
+      Long finalDoctorId = appointment.getDoctor().getId();
+      Long finalPatientId = appointment.getPatient().getId();
+
+      // Check for time conflicts with the final doctor and patient
+      // (ignore this appointment itself since we're updating it)
       checkTimeConflicts(
           request.getAppointmentTime(),
-          appointment.getDoctor().getId(),
-          appointment.getPatient().getId(),
-          appointmentId
+          finalDoctorId,
+          finalPatientId,
+          appointmentId // Ignore this appointment when checking conflicts
       );
 
+      // Update time and reason (all roles can update these)
       appointment.setAppointmentTime(request.getAppointmentTime());
       appointment.setReason(request.getReason());
 
@@ -178,6 +265,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
   // ------------- Cancel appointments -------------- //
+  /**
+   * Cancels an appointment by setting status to CANCELLED.
+   * 
+   * @param appointmentId the ID of the appointment to cancel
+   * @param role the role of the user making the request (ADMIN, DOCTOR, PATIENT)
+   * @param currentUserId the ID of the user making the request
+   * @return AppointmentResponse with cancelled status
+   */
   @Override
   public AppointmentResponse cancelAppointment(Long appointmentId, UserRole role, Long currentUserId) {
     Appointment appointment = appointmentRepository.findById(appointmentId)
@@ -255,7 +350,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     dto.setPatientId(patientUserId);
     dto.setDoctorId(doctorUserId);
 
-    // Load full profiles
+    // Load full profiles (may be null if profiles don't exist yet)
     PatientProfile patientProfile = patientProfileRepository.findByPatient_Id(patientUserId);
     DoctorProfile doctorProfile = doctorProfileRepository.findByDoctor_Id(doctorUserId);
 
@@ -263,38 +358,75 @@ public class AppointmentServiceImpl implements AppointmentService {
 
       case ADMIN:
       case DOCTOR:
-        // 1. Full Patient Info
-        dto.setPatientInfo(new PatientInfo(
-            patientProfile.getPatientId(),
-            patientProfile.getFirstName(),
-            patientProfile.getLastName(),
-            patientProfile.getAge(),
-            patientProfile.getGender(),
-            patientProfile.getSymptom(),
-            patientProfile.getMedicalHistory(),
-            patientProfile.getAllergies(),
-            patientProfile.getCurrentMedications(),
-            patientProfile.getTriagePriority()
-        ));
+        // 1. Full Patient Info (handle null profile)
+        if (patientProfile != null) {
+          dto.setPatientInfo(new PatientInfo(
+              patientProfile.getPatientId(),
+              patientProfile.getFirstName(),
+              patientProfile.getLastName(),
+              patientProfile.getAge(),
+              patientProfile.getGender(),
+              patientProfile.getSymptom(),
+              patientProfile.getMedicalHistory(),
+              patientProfile.getAllergies(),
+              patientProfile.getCurrentMedications(),
+              patientProfile.getTriagePriority()
+          ));
+        } else {
+          // Patient profile doesn't exist - set with default values
+          dto.setPatientInfo(new PatientInfo(
+              patientUserId,
+              null, // firstName
+              null, // lastName
+              0,    // age
+              null, // gender
+              null, // symptom
+              null, // medicalHistory
+              null, // allergies
+              null, // currentMedications
+              null  // triagePriority
+          ));
+        }
 
-        // 2. Full Doctor Info
-        dto.setDoctorInfo(new DoctorInfo(
-            doctorProfile.getDoctorId(),
-            doctorProfile.getFirstName(),
-            doctorProfile.getLastName(),
-            doctorProfile.getSpecialty(),
-            doctorProfile.getLicenseNumber(),
-            doctorProfile.getWorkTime()
-        ));
+        // 2. Full Doctor Info (handle null profile)
+        if (doctorProfile != null) {
+          dto.setDoctorInfo(new DoctorInfo(
+              doctorProfile.getDoctorId(),
+              doctorProfile.getFirstName(),
+              doctorProfile.getLastName(),
+              doctorProfile.getSpecialty(),
+              doctorProfile.getLicenseNumber(),
+              doctorProfile.getWorkTime()
+          ));
+        } else {
+          // Doctor profile doesn't exist - set with default values
+          dto.setDoctorInfo(new DoctorInfo(
+              doctorUserId,
+              null, // firstName
+              null, // lastName
+              null, // specialty
+              null, // licenseNumber
+              null  // workTime
+          ));
+        }
         break;
 
       case PATIENT:
-        // Patient sees only limited doctor info
-        dto.setLimitedDoctorInfo(new LimitedDoctorInfo(
-            doctorProfile.getFirstName(),
-            doctorProfile.getLastName(),
-            doctorProfile.getSpecialty()
-        ));
+        // Patient sees only limited doctor info (handle null profile)
+        if (doctorProfile != null) {
+          dto.setLimitedDoctorInfo(new LimitedDoctorInfo(
+              doctorProfile.getFirstName(),
+              doctorProfile.getLastName(),
+              doctorProfile.getSpecialty()
+          ));
+        } else {
+          // Doctor profile doesn't exist - set with default values
+          dto.setLimitedDoctorInfo(new LimitedDoctorInfo(
+              null, // firstName
+              null, // lastName
+              null  // specialty
+          ));
+        }
         break;
     }
 

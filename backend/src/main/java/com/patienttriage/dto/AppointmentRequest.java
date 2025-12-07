@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
- * AppointmentRequest is a DTO used to receive appointment data from the client (such as patientId,
- * doctorId, appointment time, and reason) when creating a new appointment.
+ * DTO for receiving appointment data from the client.
  */
 public class AppointmentRequest {
 

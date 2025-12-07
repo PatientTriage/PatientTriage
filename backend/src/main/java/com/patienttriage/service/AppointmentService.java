@@ -15,6 +15,7 @@ public interface AppointmentService {
   // ------------- Create appointments -------------- //
   /**
    * Creates a new appointment.
+   *
    * Role constraints:
    * - PATIENT: can only create appointments for themselves (patientId must match currentUserId)
    * - DOCTOR: can only create appointments for themselves (doctorId must match currentUserId)
@@ -37,7 +38,7 @@ public interface AppointmentService {
    * 
    * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)
-   * @return List<AppointmentResponse> with role-appropriate information
+   * @return list of AppointmentResponse with role-appropriate information
    */
   List<AppointmentResponse> getAppointments(UserRole role, Long currentUserId);
 
@@ -69,12 +70,11 @@ public interface AppointmentService {
 
   // ------------- Cancel appointments -------------- //
   /**
-   * Cancels an appointment by setting status to CANCELLED.
+   * Cancels an appointment by setting status CANCELLED.
    * Role constraints:
    * - PATIENT: can only cancel their own appointments
    * - DOCTOR: can only cancel appointments assigned to them
    * - ADMIN: can cancel any appointment
-   * 
    * @param appointmentId the ID of the appointment to cancel
    * @param role ADMIN, DOCTOR, PATIENT
    * @param currentUserId the ID of the user making the request (for authorization)

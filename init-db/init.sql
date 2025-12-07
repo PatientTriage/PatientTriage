@@ -103,3 +103,64 @@ CREATE TABLE appointments (
               REFERENCES users(id)
               ON DELETE CASCADE
 );
+
+-- ===========================================
+-- SEED DATA FOR TESTING
+-- ===========================================
+-- NOTE: Users should be created via POST /api/users/register API
+-- This ensures correct BCrypt password hashing.
+-- After creating users via API, the profiles and appointments below will work.
+-- 
+-- Example users to create:
+-- - admin@test.com / admin123 (ADMIN)
+-- - patient1@test.com through patient5@test.com / patient123 (PATIENT)  
+-- - doctor1@test.com through doctor3@test.com / doctor123 (DOCTOR)
+
+-- Insert Patient Profiles (only if users exist)
+INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
+SELECT id, 'John', 'Doe', 35, 'Male', 'Headache and fever', 'Hypertension', 'Peanuts', 'Aspirin', 'Medium' FROM users WHERE username = 'patient1@test.com'
+ON CONFLICT (patient_id) DO NOTHING;
+INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
+SELECT id, 'Jane', 'Smith', 28, 'Female', 'Chest pain', 'None', 'None', 'None', 'High' FROM users WHERE username = 'patient2@test.com'
+ON CONFLICT (patient_id) DO NOTHING;
+INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
+SELECT id, 'Bob', 'Johnson', 45, 'Male', 'Back pain', 'Diabetes', 'Penicillin', 'Metformin', 'Low' FROM users WHERE username = 'patient3@test.com'
+ON CONFLICT (patient_id) DO NOTHING;
+INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
+SELECT id, 'Alice', 'Williams', 32, 'Female', 'Sore throat', 'Asthma', 'Dust', 'Inhaler', 'Medium' FROM users WHERE username = 'patient4@test.com'
+ON CONFLICT (patient_id) DO NOTHING;
+INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
+SELECT id, 'Charlie', 'Brown', 50, 'Male', 'Joint pain', 'Arthritis', 'None', 'Ibuprofen', 'Low' FROM users WHERE username = 'patient5@test.com'
+ON CONFLICT (patient_id) DO NOTHING;
+
+-- Insert Doctor Profiles (only if users exist)
+INSERT INTO doctor_profile (doctor_id, first_name, last_name, specialty, license_number, work_time) 
+SELECT id, 'Sarah', 'Chen', 'Cardiology', 'MD-12345', 'Mon-Fri 9:00-17:00' FROM users WHERE username = 'doctor1@test.com'
+ON CONFLICT (doctor_id) DO NOTHING;
+INSERT INTO doctor_profile (doctor_id, first_name, last_name, specialty, license_number, work_time) 
+SELECT id, 'Michael', 'Rodriguez', 'Pediatrics', 'MD-23456', 'Mon-Fri 8:00-16:00' FROM users WHERE username = 'doctor2@test.com'
+ON CONFLICT (doctor_id) DO NOTHING;
+INSERT INTO doctor_profile (doctor_id, first_name, last_name, specialty, license_number, work_time) 
+SELECT id, 'Emily', 'Watson', 'General Practice', 'MD-34567', 'Mon-Fri 10:00-18:00' FROM users WHERE username = 'doctor3@test.com'
+ON CONFLICT (doctor_id) DO NOTHING;
+
+-- Insert Admin Profile (only if user exists)
+INSERT INTO admin_profile (admin_id, first_name, last_name, audit_logs, permissions) 
+SELECT id, 'Admin', 'User', 'System logs', 'All permissions' FROM users WHERE username = 'admin@test.com'
+ON CONFLICT (admin_id) DO NOTHING;
+
+-- Insert Sample Appointments
+-- Future appointments
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at) VALUES
+((SELECT id FROM users WHERE username = 'patient1@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '1 day' + INTERVAL '10 hours', 'Regular checkup', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient2@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '2 days' + INTERVAL '14 hours' + INTERVAL '30 minutes', 'Chest pain evaluation', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient3@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() + INTERVAL '3 days' + INTERVAL '9 hours', 'Back pain consultation', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient4@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '4 days' + INTERVAL '11 hours', 'Sore throat examination', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient5@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '5 days' + INTERVAL '15 hours', 'Joint pain assessment', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient1@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() + INTERVAL '6 days' + INTERVAL '10 hours' + INTERVAL '30 minutes', 'Follow-up appointment', 'SCHEDULED', NOW()),
+((SELECT id FROM users WHERE username = 'patient2@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '7 days' + INTERVAL '13 hours', 'General consultation', 'SCHEDULED', NOW()),
+-- Past appointments (completed)
+((SELECT id FROM users WHERE username = 'patient3@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() - INTERVAL '5 days' + INTERVAL '10 hours', 'Previous consultation', 'COMPLETED', NOW()),
+((SELECT id FROM users WHERE username = 'patient4@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() - INTERVAL '3 days' + INTERVAL '14 hours', 'Previous checkup', 'COMPLETED', NOW()),
+-- Cancelled appointment
+((SELECT id FROM users WHERE username = 'patient5@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '8 days' + INTERVAL '9 hours', 'Cancelled appointment', 'CANCELLED', NOW());

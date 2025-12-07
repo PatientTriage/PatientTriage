@@ -7,8 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 /**
- * DTO for user registration.
- * Contains the required fields for creating a new user.
+ * DTO for user registration request.
  */
 public class UserRegisterRequest {
 

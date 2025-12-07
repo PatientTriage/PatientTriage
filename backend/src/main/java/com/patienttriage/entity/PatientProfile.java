@@ -8,6 +8,9 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
+/**
+ * Entity representing a patient profile with medical information.
+ */
 @Entity
 @Table(name = "patient_profile")
 public class PatientProfile {
