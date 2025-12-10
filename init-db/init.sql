@@ -107,14 +107,31 @@ CREATE TABLE appointments (
 -- ===========================================
 -- SEED DATA FOR TESTING
 -- ===========================================
--- NOTE: Users should be created via POST /api/users/register API
--- This ensures correct BCrypt password hashing.
--- After creating users via API, the profiles and appointments below will work.
--- 
--- Example users to create:
--- - admin@test.com / admin123 (ADMIN)
--- - patient1@test.com through patient5@test.com / patient123 (PATIENT)  
--- - doctor1@test.com through doctor3@test.com / doctor123 (DOCTOR)
+-- Create test users with BCrypt hashed passwords
+-- Passwords: admin123, patient123, doctor123
+
+-- Insert Admin User
+INSERT INTO users (username, password, role, created_at)
+VALUES ('admin@test.com', '$2a$10$eDXSsrXCNEsIXNvylvPnkeDvWG1IMDQLkC6qJblDYTs8/3LVG8E1u', 'ADMIN', NOW())
+ON CONFLICT (username) DO NOTHING;
+
+-- Insert Patient Users
+INSERT INTO users (username, password, role, created_at)
+VALUES 
+  ('patient1@test.com', '$2a$10$yQ9fBMABmLOdVY1eF/8dfOJa8gbDQ.IC5smuxC4gdJX4vYOz6WVjS', 'PATIENT', NOW()),
+  ('patient2@test.com', '$2a$10$yQ9fBMABmLOdVY1eF/8dfOJa8gbDQ.IC5smuxC4gdJX4vYOz6WVjS', 'PATIENT', NOW()),
+  ('patient3@test.com', '$2a$10$yQ9fBMABmLOdVY1eF/8dfOJa8gbDQ.IC5smuxC4gdJX4vYOz6WVjS', 'PATIENT', NOW()),
+  ('patient4@test.com', '$2a$10$yQ9fBMABmLOdVY1eF/8dfOJa8gbDQ.IC5smuxC4gdJX4vYOz6WVjS', 'PATIENT', NOW()),
+  ('patient5@test.com', '$2a$10$yQ9fBMABmLOdVY1eF/8dfOJa8gbDQ.IC5smuxC4gdJX4vYOz6WVjS', 'PATIENT', NOW())
+ON CONFLICT (username) DO NOTHING;
+
+-- Insert Doctor Users
+INSERT INTO users (username, password, role, created_at)
+VALUES 
+  ('doctor1@test.com', '$2a$10$TgshEi1zkEYFfkWb/ZpfnOSHRAgSudExXEDuLmzWZcJvCtdqB7ZHa', 'DOCTOR', NOW()),
+  ('doctor2@test.com', '$2a$10$TgshEi1zkEYFfkWb/ZpfnOSHRAgSudExXEDuLmzWZcJvCtdqB7ZHa', 'DOCTOR', NOW()),
+  ('doctor3@test.com', '$2a$10$TgshEi1zkEYFfkWb/ZpfnOSHRAgSudExXEDuLmzWZcJvCtdqB7ZHa', 'DOCTOR', NOW())
+ON CONFLICT (username) DO NOTHING;
 
 -- Insert Patient Profiles (only if users exist)
 INSERT INTO patient_profile (patient_id, first_name, last_name, age, gender, symptom, medical_history, allergies, current_medications, triage_priority) 
@@ -150,17 +167,116 @@ SELECT id, 'Admin', 'User', 'System logs', 'All permissions' FROM users WHERE us
 ON CONFLICT (admin_id) DO NOTHING;
 
 -- Insert Sample Appointments
+-- Only insert if both patient and doctor users exist
 -- Future appointments
-INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at) VALUES
-((SELECT id FROM users WHERE username = 'patient1@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '1 day' + INTERVAL '10 hours', 'Regular checkup', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient2@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '2 days' + INTERVAL '14 hours' + INTERVAL '30 minutes', 'Chest pain evaluation', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient3@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() + INTERVAL '3 days' + INTERVAL '9 hours', 'Back pain consultation', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient4@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '4 days' + INTERVAL '11 hours', 'Sore throat examination', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient5@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() + INTERVAL '5 days' + INTERVAL '15 hours', 'Joint pain assessment', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient1@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() + INTERVAL '6 days' + INTERVAL '10 hours' + INTERVAL '30 minutes', 'Follow-up appointment', 'SCHEDULED', NOW()),
-((SELECT id FROM users WHERE username = 'patient2@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '7 days' + INTERVAL '13 hours', 'General consultation', 'SCHEDULED', NOW()),
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient1@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor1@test.com'),
+    NOW() + INTERVAL '1 day' + INTERVAL '10 hours',
+    'Regular checkup',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient1@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor1@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient2@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor1@test.com'),
+    NOW() + INTERVAL '2 days' + INTERVAL '14 hours' + INTERVAL '30 minutes',
+    'Chest pain evaluation',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient2@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor1@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient3@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor2@test.com'),
+    NOW() + INTERVAL '3 days' + INTERVAL '9 hours',
+    'Back pain consultation',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient3@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor2@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient4@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor3@test.com'),
+    NOW() + INTERVAL '4 days' + INTERVAL '11 hours',
+    'Sore throat examination',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient4@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor3@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient5@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor1@test.com'),
+    NOW() + INTERVAL '5 days' + INTERVAL '15 hours',
+    'Joint pain assessment',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient5@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor1@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient1@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor2@test.com'),
+    NOW() + INTERVAL '6 days' + INTERVAL '10 hours' + INTERVAL '30 minutes',
+    'Follow-up appointment',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient1@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor2@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient2@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor3@test.com'),
+    NOW() + INTERVAL '7 days' + INTERVAL '13 hours',
+    'General consultation',
+    'SCHEDULED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient2@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor3@test.com');
+
 -- Past appointments (completed)
-((SELECT id FROM users WHERE username = 'patient3@test.com'), (SELECT id FROM users WHERE username = 'doctor1@test.com'), NOW() - INTERVAL '5 days' + INTERVAL '10 hours', 'Previous consultation', 'COMPLETED', NOW()),
-((SELECT id FROM users WHERE username = 'patient4@test.com'), (SELECT id FROM users WHERE username = 'doctor2@test.com'), NOW() - INTERVAL '3 days' + INTERVAL '14 hours', 'Previous checkup', 'COMPLETED', NOW()),
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient3@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor1@test.com'),
+    NOW() - INTERVAL '5 days' + INTERVAL '10 hours',
+    'Previous consultation',
+    'COMPLETED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient3@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor1@test.com');
+
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient4@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor2@test.com'),
+    NOW() - INTERVAL '3 days' + INTERVAL '14 hours',
+    'Previous checkup',
+    'COMPLETED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient4@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor2@test.com');
+
 -- Cancelled appointment
-((SELECT id FROM users WHERE username = 'patient5@test.com'), (SELECT id FROM users WHERE username = 'doctor3@test.com'), NOW() + INTERVAL '8 days' + INTERVAL '9 hours', 'Cancelled appointment', 'CANCELLED', NOW());
+INSERT INTO appointments (patient_id, doctor_id, appointment_time, reason, status, created_at)
+SELECT 
+    (SELECT id FROM users WHERE username = 'patient5@test.com'),
+    (SELECT id FROM users WHERE username = 'doctor3@test.com'),
+    NOW() + INTERVAL '8 days' + INTERVAL '9 hours',
+    'Cancelled appointment',
+    'CANCELLED',
+    NOW()
+WHERE EXISTS (SELECT 1 FROM users WHERE username = 'patient5@test.com')
+  AND EXISTS (SELECT 1 FROM users WHERE username = 'doctor3@test.com');
